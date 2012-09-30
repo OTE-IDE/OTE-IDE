@@ -47,6 +47,10 @@ one-editor project could.
 Design
 ======
 
+See the Github wiki (also available as a git repository of rst files)
+for some notes on design: https://github.com/OTE-IDE/OTE-IDE/wiki/Design-Notes
+
+
 Licensing
 =========
 
