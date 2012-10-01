@@ -51,3 +51,17 @@ def test_help_command():
     assert "Usage:" in stdout
     assert "ote help [<subcommand>]" in stdout
     
+
+def test_lint_command_with_filename():
+	# Arrange
+	
+	# Act
+	exit_code, stdout, stderr = run_command(['lint', 'testdata/errors'])
+	
+	# Assert
+	assert exit_code == 0
+	assert ''
+	
+	
+def test_lint_command_without_filename():
+	raise Exception('Not implemented')
