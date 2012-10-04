@@ -1,6 +1,7 @@
 """Tests for the ote command"""
 from StringIO import StringIO
 
+import mock
 
 from ote.__main__ import main
 
@@ -50,4 +51,55 @@ def test_help_command():
     assert exit_code == 0
     assert "Usage:" in stdout
     assert "ote help [<subcommand>]" in stdout
+
+
+def test_test_command_should_load_config():
+    """ote test should call ote.test.run with arguments"""
+    # Arrange
+
+    # Act
+    with mock.patch('ote.config.load', return_value={}) as test:
+        exit_code, stdout, stderr = run_command(['test'])
+        
+    # Assert
+    assert test.called_once_with(None)
+
+
+def test_test_command_should_pass_path_to_config_load():
+    """ote test should call ote.test.run with arguments"""
+    # Arrange
+
+    # Act
+    with mock.patch('ote.config.load', return_value={}) as test:
+        exit_code, stdout, stderr = run_command(['test', 'a path'])
+        
+    # Assert
+    assert test.called_once_with('a path')
+    
+
+def test_test_command_should_return_failure_if_no_test_plugin_configured():
+    """ote test should fail if there is no test plugin in the configuration
+    """
+    with mock.patch('ote.config.load', return_value={}):
+        exit_code, stdout, stderr = run_command(['test'])
+
+    assert exit_code == 1
+    assert "No test runner plugin configured" in stderr
+
+
+# def test_test_command_should_try_to_load_test_plugin():
+#     """ote test should try to load a configured test plugin"""
+#     # Arrange
+#     config = {'plugins': {'test-runner': 'nose'}}
+
+#     # Act
+#     with mock.patch('ote.config.load', return_value=config):
+#         with mock.patch('ote.plugins.load') as load:
+#             exit_code, stdout, stderr = run_command(['test'])
+
+#     # Assert
+#     load.assert_called_once_with('nose')
+    
+    
+    
     

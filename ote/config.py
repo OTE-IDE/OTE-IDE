@@ -22,3 +22,6 @@ def load_config(project_root=None):
     return configobj.ConfigObj(config_path,
                                encoding=constants.CONFIG_FILE_ENCODING)
 
+
+# Alias as config.load_config isn't as nice as config.load()
+load = load_config 

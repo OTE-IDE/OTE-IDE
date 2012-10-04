@@ -3,14 +3,14 @@
 import os
 import os.path
 
-OTE_PROJECT_FILENAME = '.ote-project'
+import logging
+
+import ote.constants
+from ote.exceptions import NoProjectException
+
+_log = logging.getLogger(__name__)
 
 
-class NoProjectException(Exception):
-
-    def __init__(self, path):
-        super(NoProjectException, self).__init__(path)
-        self.path = path
 
 
 def find_project_root(start_path=None):
@@ -18,17 +18,20 @@ def find_project_root(start_path=None):
 
     This walks up the filesystem looking for a .ote-project file.
     """
-    start_path = os.getcwd() if start_path is None else start_path
-    path = start_path
+    _log.debug("Searching for project root for %s", start_path)
     
-    while path:
-        if OTE_PROJECT_FILENAME in os.listdir(path):
-            break
+    start_path = os.getcwd() if start_path is None else start_path
+
+    if os.path.isfile(start_path):
+        path = os.path.dirname(start_path)
+    else:
+        path = start_path
+    
+    while ote.constants.OTE_PROJECT_FILENAME not in os.listdir(path):
         head, tail = os.path.split(path)
         if not tail: # Signifies no separators in path
+            _log.debug("Search for project root failed.  Reached %s",
+                       head)
             raise NoProjectException(start_path)
         path = head
     return path
-    
-    
-    

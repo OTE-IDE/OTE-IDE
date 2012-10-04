@@ -1,6 +1,6 @@
 [plugins]
 linters = pep8, pyflakes
-test_runner = nose
+test-runner = nose
 
 [nose]
 test-path = tests

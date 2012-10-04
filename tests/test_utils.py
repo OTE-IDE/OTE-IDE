@@ -3,7 +3,8 @@
 import mock
 from nose.tools import assert_raises
 
-from ote.utils import find_project_root, NoProjectException
+from ote.exceptions import NoProjectException
+from ote.utils import find_project_root
 
 
 def test_find_project_root_in_root():
