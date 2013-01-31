@@ -5,6 +5,7 @@ import mock
 
 from ote.__main__ import main
 
+
 def run_command(args=None, stdin=None):
     """Runs the ote command and returns exitcode, stdout, stderr
 
@@ -25,7 +26,7 @@ def run_command(args=None, stdin=None):
             exit_code = 1
 
     return exit_code, stdout.getvalue(), stderr.getvalue()
-    
+
 
 def test_raw_command():
     """ote on its own should display a usage message on standard error"""
@@ -60,7 +61,7 @@ def test_test_command_should_load_config():
     # Act
     with mock.patch('ote.config.load', return_value={}) as test:
         exit_code, stdout, stderr = run_command(['test'])
-        
+
     # Assert
     assert test.called_once_with(None)
 
@@ -72,10 +73,10 @@ def test_test_command_should_pass_path_to_config_load():
     # Act
     with mock.patch('ote.config.load', return_value={}) as test:
         exit_code, stdout, stderr = run_command(['test', 'a path'])
-        
+
     # Assert
     assert test.called_once_with('a path')
-    
+
 
 def test_test_command_should_return_failure_if_no_test_plugin_configured():
     """ote test should fail if there is no test plugin in the configuration
@@ -87,19 +88,29 @@ def test_test_command_should_return_failure_if_no_test_plugin_configured():
     assert "No test runner plugin configured" in stderr
 
 
-# def test_test_command_should_try_to_load_test_plugin():
-#     """ote test should try to load a configured test plugin"""
-#     # Arrange
-#     config = {'plugins': {'test-runner': 'nose'}}
+def test_test_command_should_try_to_load_test_plugin():
+    """ote test should try to load a configured test plugin"""
+    # Arrange
+    config = {'plugins': {'test-runner': 'nose'}}
 
-#     # Act
-#     with mock.patch('ote.config.load', return_value=config):
-#         with mock.patch('ote.plugins.load') as load:
-#             exit_code, stdout, stderr = run_command(['test'])
+    # Act
+    with mock.patch('ote.config.load', return_value=config):
+        with mock.patch('ote.plugins.load') as load:
+            exit_code, stdout, stderr = run_command(['test'])
 
-#     # Assert
-#     load.assert_called_once_with('nose')
-    
-    
-    
-    
+    # Assert
+    load.assert_called_once_with('nose')
+
+
+def test_test_command_should_try_to_run_test_plugin():
+    """ote test should try to load a configured test plugin"""
+    # Arrange
+    plugin = mock.Mock()
+
+    # Act
+    with mock.patch('ote.config.load'):
+        with mock.patch('ote.plugins.load', return_value=plugin) as load:
+            exit_code, stdout, stderr = run_command(['test'])
+
+    # Assert
+    plugin.run.assert_called_once()

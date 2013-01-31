@@ -7,29 +7,31 @@ Usage:
 
 """
 import sys
-import os
 
 import docopt
 
 from ote import __version__
 import ote.config
+import ote.plugins
 
-
-def _help(stdin, stdout, stderr, **kwargs):
+def _help(_stdin, stdout, _stderr, **_kwargs):
     print >> stdout, docopt.printable_usage(__doc__)
 
 
-def _lint(stdin, stdout, stderr, **kwargs):
+def _lint(_stdin, stdout, _stderr, **kwargs):
     print >> stdout, "Linting", kwargs.get('<path>', '')
 
 
-def _test(stdin, stdout, stderr, **kwargs):
+def _test(_stdin, stdout, stderr, **kwargs):
     path = kwargs.get('<path>')
     config = ote.config.load(path)
-    if 'test-runner' not in config.get('plugins', {}):
+    plugin_name = config.get('plugins', {}).get('test-runner')
+    if plugin_name is None:
         print >> stderr, "No test runner plugin configured"
         return 1
-    
+    plugin = ote.plugins.load(plugin_name)
+    plugin.run()
+
 
 SUBCOMMANDS = {
     'help': _help,

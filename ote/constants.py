@@ -8,4 +8,3 @@ OTE_USER_FILENAME = '.ote-user'
 
 # This is the encoding of config files
 CONFIG_FILE_ENCODING = 'utf-8'
-

@@ -15,13 +15,13 @@ def load_config(project_root=None):
     """
     if project_root is None:
         project_root = ote.utils.find_project_root()
-    
+
     config_path = os.path.join(project_root,
-        constants.OTE_PROJECT_FILENAME)
-    
+                               constants.OTE_PROJECT_FILENAME)
+
     return configobj.ConfigObj(config_path,
                                encoding=constants.CONFIG_FILE_ENCODING)
 
 
 # Alias as config.load_config isn't as nice as config.load()
-load = load_config 
+load = load_config
